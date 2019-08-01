@@ -62,7 +62,7 @@ func (g *generator) addApp(cfg *config.ApplicationConfig) {
 	)
 	g.app.Attr("label", makeLabel(cfg.Name(), "application"))
 
-	for _, h := range sortHandlers(cfg.Handlers) {
+	for _, h := range sortHandlers(cfg.HandlersByName) {
 		g.addHandler(h)
 	}
 }
