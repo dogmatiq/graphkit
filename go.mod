@@ -5,7 +5,7 @@ go 1.13
 require (
 	github.com/dogmatiq/dogma v0.6.0
 	github.com/dogmatiq/enginekit v0.6.0
-	github.com/emicklei/dot v0.9.2
+	github.com/emicklei/dot v0.10.1
 	github.com/golang/protobuf v1.3.2 // indirect
 	github.com/onsi/ginkgo v1.8.0 // indirect
 	github.com/onsi/gomega v1.5.0 // indirect
