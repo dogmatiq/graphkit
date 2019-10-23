@@ -60,7 +60,7 @@ func (g *generator) addApp(cfg *config.ApplicationConfig) {
 		g.nextID(),
 		dot.ClusterOption{},
 	)
-	g.app.Attr("label", makeLabel(cfg.Name(), "application"))
+	g.app.Attr("label", makeLabel(cfg.Identity().Name, "application"))
 
 	for _, h := range sortHandlers(cfg.HandlersByName) {
 		g.addHandler(h)
@@ -70,7 +70,7 @@ func (g *generator) addApp(cfg *config.ApplicationConfig) {
 // addHandler adds a handler to the graph as a node.
 func (g *generator) addHandler(cfg config.HandlerConfig) {
 	n := g.app.Node(g.nextID())
-	n.Attr("label", makeLabel(cfg.Name(), cfg.HandlerType().String()))
+	n.Attr("label", makeLabel(cfg.Identity().Name, cfg.HandlerType().String()))
 	n.Attr("style", "filled")
 	n.Attr("fillcolor", handlerColors[cfg.HandlerType()])
 	n.Attr("shape", handlerShapes[cfg.HandlerType()])

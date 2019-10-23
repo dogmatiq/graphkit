@@ -1,7 +1,7 @@
 github.com/dogmatiq/dogma v0.6.0 h1:HdJ0cTcORIxZRTB5Z7RdsBXEr18gB3so7FMIHYiAhEQ=
 github.com/dogmatiq/dogma v0.6.0/go.mod h1:Im+Z77qgdIza8H5g/rrbrxCkHkJK7hHFs49MAqMHLTc=
-github.com/dogmatiq/enginekit v0.7.0 h1:DAion4oJ3VeOz7xqW3J5c5GDG865QJ6G3kvVVB9owfc=
-github.com/dogmatiq/enginekit v0.7.0/go.mod h1:sEWG4lEnwl74og8fDTzIohCnM4c8GZLz/LvqQMipAbw=
+github.com/dogmatiq/enginekit v0.8.0 h1:hl/OWWduW7tojy7/x+e/ModKTHKR9IkxeXpj1YsEUbo=
+github.com/dogmatiq/enginekit v0.8.0/go.mod h1:sEWG4lEnwl74og8fDTzIohCnM4c8GZLz/LvqQMipAbw=
 github.com/dogmatiq/iago v0.4.0/go.mod h1:fishMWBtzYcjgis6d873VTv9kFm/wHYLOzOyO9ECBDc=
 github.com/emicklei/dot v0.10.1 h1:bkzvwgIhhw/cuxxnJy5/5+ZL3GnhFxFfv0eolHtWE2w=
 github.com/emicklei/dot v0.10.1/go.mod h1:kZg82Ikwc4pqb31Ct2yb0B7RUqxh3JESIXw2uWSv/xY=
