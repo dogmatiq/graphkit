@@ -9,6 +9,12 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Keep a Changelog]: https://keepachangelog.com/en/1.0.0/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
 
+## [0.2.0] - 2019-10-31
+
+### Changed
+
+- Update to EngineKit v0.8.0
+
 ## [0.1.0] - 2019-08-01
 
 - Initial release
@@ -16,6 +22,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 <!-- references -->
 [Unreleased]: https://github.com/dogmatiq/graphkit
 [0.1.0]: https://github.com/dogmatiq/graphkit/releases/tag/v0.1.0
+[0.2.0]: https://github.com/dogmatiq/graphkit/releases/tag/v0.2.0
 
 <!-- version template
 ## [0.0.1] - YYYY-MM-DD
