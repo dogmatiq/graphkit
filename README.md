@@ -1,4 +1,4 @@
-# Dogma Graph Kit
+# Dogma Graph Toolkit
 
 [![Build Status](https://github.com/dogmatiq/graphkit/workflows/CI/badge.svg)](https://github.com/dogmatiq/graphkit/actions?workflow=CI)
 [![Code Coverage](https://img.shields.io/codecov/c/github/dogmatiq/graphkit/master.svg)](https://codecov.io/github/dogmatiq/graphkit)
