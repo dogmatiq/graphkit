@@ -1,8 +1,8 @@
 package graphkit
 
 import (
-	"github.com/dogmatiq/enginekit/handler"
-	"github.com/dogmatiq/enginekit/message"
+	"github.com/dogmatiq/configkit"
+	"github.com/dogmatiq/configkit/message"
 )
 
 const (
@@ -18,16 +18,16 @@ var roleColors = map[message.Role]string{
 	message.EventRole:   "#ff6600",
 }
 
-var handlerShapes = map[handler.Type]string{
-	handler.AggregateType:   "oval",
-	handler.ProcessType:     "diamond",
-	handler.IntegrationType: "box",
-	handler.ProjectionType:  "cylinder",
+var handlerShapes = map[configkit.HandlerType]string{
+	configkit.AggregateHandlerType:   "oval",
+	configkit.ProcessHandlerType:     "diamond",
+	configkit.IntegrationHandlerType: "box",
+	configkit.ProjectionHandlerType:  "cylinder",
 }
 
-var handlerColors = map[handler.Type]string{
-	handler.AggregateType:   "#fff89d",
-	handler.ProcessType:     "#c086c5",
-	handler.IntegrationType: "#ffde00",
-	handler.ProjectionType:  "#a3d350",
+var handlerColors = map[configkit.HandlerType]string{
+	configkit.AggregateHandlerType:   "#fff89d",
+	configkit.ProcessHandlerType:     "#c086c5",
+	configkit.IntegrationHandlerType: "#ffde00",
+	configkit.ProjectionHandlerType:  "#a3d350",
 }

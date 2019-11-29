@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/dogmatiq/configkit"
+	"github.com/dogmatiq/configkit/message"
 	"github.com/dogmatiq/dogma"
-	"github.com/dogmatiq/enginekit/config"
-	"github.com/dogmatiq/enginekit/message"
 	"github.com/emicklei/dot"
 )
 
@@ -17,9 +17,9 @@ type generator struct {
 	id        int
 	root      *dot.Graph
 	app       *dot.Graph
-	roles     map[message.Type]message.Role
-	producers map[message.Type][]dot.Node
-	consumers map[message.Type][]dot.Node
+	roles     map[message.Name]message.Role
+	producers map[message.Name][]dot.Node
+	consumers map[message.Name][]dot.Node
 }
 
 // nextID returns a unique ID to use for a sub-graph or node.
@@ -29,24 +29,21 @@ func (g *generator) nextID() string {
 }
 
 // generate builds and returns a graph of the given applications.
-func (g *generator) generate(apps []dogma.Application) (*dot.Graph, error) {
+func (g *generator) generate(apps []dogma.Application) (_ *dot.Graph, err error) {
+	defer configkit.Recover(&err)
+
 	g.root = dot.NewGraph(dot.Directed)
 	g.root.Attr("rankdir", "LR")
 	g.root.Attr("splines", "spline")
 	g.root.Attr("overlap", "false")
 	g.root.Attr("outputMode", "nodesfirst")
 
-	g.roles = map[message.Type]message.Role{}
-	g.producers = map[message.Type][]dot.Node{}
-	g.consumers = map[message.Type][]dot.Node{}
+	g.roles = map[message.Name]message.Role{}
+	g.producers = map[message.Name][]dot.Node{}
+	g.consumers = map[message.Name][]dot.Node{}
 
 	for _, app := range apps {
-		cfg, err := config.NewApplicationConfig(app)
-		if err != nil {
-			return nil, err
-		}
-
-		g.addApp(cfg)
+		g.addApp(configkit.FromApplication(app))
 	}
 
 	g.addExternal()
@@ -55,20 +52,20 @@ func (g *generator) generate(apps []dogma.Application) (*dot.Graph, error) {
 }
 
 // addApp adds an application to the graph as a sub-graph.
-func (g *generator) addApp(cfg *config.ApplicationConfig) {
+func (g *generator) addApp(cfg configkit.Application) {
 	g.app = g.root.Subgraph(
 		g.nextID(),
 		dot.ClusterOption{},
 	)
 	g.app.Attr("label", makeLabel(cfg.Identity().Name, "application"))
 
-	for _, h := range sortHandlers(cfg.HandlersByName) {
+	for _, h := range sortHandlers(cfg.Handlers()) {
 		g.addHandler(h)
 	}
 }
 
 // addHandler adds a handler to the graph as a node.
-func (g *generator) addHandler(cfg config.HandlerConfig) {
+func (g *generator) addHandler(cfg configkit.Handler) {
 	n := g.app.Node(g.nextID())
 	n.Attr("label", makeLabel(cfg.Identity().Name, cfg.HandlerType().String()))
 	n.Attr("style", "filled")
@@ -81,30 +78,37 @@ func (g *generator) addHandler(cfg config.HandlerConfig) {
 
 // addEdges adds edges describing the messages that are produced and consumed by
 // a specific handler.
-func (g *generator) addEdges(cfg config.HandlerConfig, n dot.Node) {
-	for t, r := range cfg.ConsumedMessageTypes() {
-		g.roles[t] = r
-		g.consumers[t] = append(g.consumers[t], n)
+func (g *generator) addEdges(cfg configkit.Handler, n dot.Node) {
+	names := cfg.MessageNames()
 
-		for _, p := range g.producers[t] {
-			g.addEdge(p, n, t, r)
+	for mn, r := range names.Consumed {
+		g.roles[mn] = r
+		g.consumers[mn] = append(g.consumers[mn], n)
+
+		for _, p := range g.producers[mn] {
+			g.addEdge(p, n, mn, r)
 		}
 	}
 
-	for t, r := range cfg.ProducedMessageTypes() {
-		g.roles[t] = r
-		g.producers[t] = append(g.producers[t], n)
+	for mn, r := range names.Produced {
+		g.roles[mn] = r
+		g.producers[mn] = append(g.producers[mn], n)
 
-		for _, c := range g.consumers[t] {
-			g.addEdge(n, c, t, r)
+		for _, c := range g.consumers[mn] {
+			g.addEdge(n, c, mn, r)
 		}
 	}
 }
 
 // addEdge adds an edge between two handler nodes.
 // If the edge already exists, its label is expanded to include this message type.
-func (g *generator) addEdge(src, dst dot.Node, t message.Type, r message.Role) {
-	label := t.String() + r.Marker()
+func (g *generator) addEdge(src, dst dot.Node, mn message.Name, r message.Role) {
+	label := mn.String() + r.Marker()
+
+	index := strings.LastIndex(label, ".")
+	if index != -1 {
+		label = label[index+1:]
+	}
 
 	// find an existing edge and add to its label.
 	for _, e := range g.root.FindEdges(src, dst) {
@@ -190,8 +194,8 @@ func makeLabel(n, t string) string {
 
 // sortHandlers returns a set of handlers in an app, sorted by the number of
 // message types they are aware of.
-func sortHandlers(handlers map[string]config.HandlerConfig) []config.HandlerConfig {
-	var sorted []config.HandlerConfig
+func sortHandlers(handlers configkit.HandlerSet) []configkit.Handler {
+	var sorted []configkit.Handler
 
 	for _, h := range handlers {
 		sorted = append(sorted, h)
@@ -200,10 +204,9 @@ func sortHandlers(handlers map[string]config.HandlerConfig) []config.HandlerConf
 	sort.Slice(
 		sorted,
 		func(i, j int) bool {
-			li := len(sorted[i].ConsumedMessageTypes()) + len(sorted[i].ProducedMessageTypes())
-			lj := len(sorted[j].ConsumedMessageTypes()) + len(sorted[j].ProducedMessageTypes())
-
-			return li < lj
+			in := sorted[i].MessageNames()
+			jn := sorted[j].MessageNames()
+			return len(in.Roles) < len(jn.Roles)
 		},
 	)
 

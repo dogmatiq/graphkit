@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/dogmatiq/dogma"
-	"github.com/dogmatiq/enginekit/fixtures"
+	"github.com/dogmatiq/dogma/fixtures"
 	"github.com/dogmatiq/graphkit"
 )
 
