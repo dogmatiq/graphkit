@@ -3,6 +3,7 @@ package graphkit_test
 import (
 	"testing"
 
+	"github.com/dogmatiq/configkit"
 	"github.com/dogmatiq/dogma"
 	"github.com/dogmatiq/dogma/fixtures"
 	"github.com/dogmatiq/graphkit"
@@ -49,7 +50,9 @@ func TestGenerate_coverage(t *testing.T) {
 		},
 	}
 
-	_, err := graphkit.Generate(app)
+	cfg := configkit.FromApplication(app)
+
+	_, err := graphkit.Generate(cfg)
 	if err != nil {
 		t.Fatal(err)
 	}

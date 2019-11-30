@@ -1,14 +1,12 @@
 package graphkit
 
 import (
-	"fmt"
 	"sort"
 	"strconv"
 	"strings"
 
 	"github.com/dogmatiq/configkit"
 	"github.com/dogmatiq/configkit/message"
-	"github.com/dogmatiq/dogma"
 	"github.com/emicklei/dot"
 )
 
@@ -29,21 +27,20 @@ func (g *generator) nextID() string {
 }
 
 // generate builds and returns a graph of the given applications.
-func (g *generator) generate(apps []dogma.Application) (_ *dot.Graph, err error) {
-	defer configkit.Recover(&err)
-
+func (g *generator) generate(apps []configkit.Application) (_ *dot.Graph, err error) {
 	g.root = dot.NewGraph(dot.Directed)
-	g.root.Attr("rankdir", "LR")
-	g.root.Attr("splines", "spline")
+	g.root.Attr("rankdir", "TB")
+	g.root.Attr("concentrate", "false")
+	g.root.Attr("splines", "true")
 	g.root.Attr("overlap", "false")
-	g.root.Attr("outputMode", "nodesfirst")
+	g.root.Attr("outputorder", "edgesfirst")
 
 	g.roles = map[message.Name]message.Role{}
 	g.producers = map[message.Name][]dot.Node{}
 	g.consumers = map[message.Name][]dot.Node{}
 
 	for _, app := range apps {
-		g.addApp(configkit.FromApplication(app))
+		g.addApp(app)
 	}
 
 	g.addExternal()
@@ -57,7 +54,11 @@ func (g *generator) addApp(cfg configkit.Application) {
 		g.nextID(),
 		dot.ClusterOption{},
 	)
-	g.app.Attr("label", makeLabel(cfg.Identity().Name, "application"))
+	g.app.Attr("penwidth", "0")
+	g.app.Attr("style", "filled")
+	g.app.Attr("fillcolor", "#eeeeee")
+	g.app.Attr("label", cfg.Identity().Name)
+	g.app.Attr("fontname", "Helvetica")
 
 	for _, h := range sortHandlers(cfg.Handlers()) {
 		g.addHandler(h)
@@ -67,11 +68,14 @@ func (g *generator) addApp(cfg configkit.Application) {
 // addHandler adds a handler to the graph as a node.
 func (g *generator) addHandler(cfg configkit.Handler) {
 	n := g.app.Node(g.nextID())
-	n.Attr("label", makeLabel(cfg.Identity().Name, cfg.HandlerType().String()))
-	n.Attr("style", "filled")
+	n.Attr("label", cfg.Identity().Name)
 	n.Attr("fillcolor", handlerColors[cfg.HandlerType()])
 	n.Attr("shape", handlerShapes[cfg.HandlerType()])
-	n.Attr("fontsize", nodeLabelFontSize)
+	n.Attr("style", "filled")
+	n.Attr("fontname", "Helvetica")
+	n.Attr("margin", "0.15")
+	n.Attr("penwidth", "2")
+	n.Attr("color", "#eeeeee")
 
 	g.addEdges(cfg, n)
 }
@@ -130,7 +134,9 @@ func (g *generator) addEdge(src, dst dot.Node, mn message.Name, r message.Role) 
 		label,
 	)
 
-	e.Attr("fontsize", edgeLabelFontSize)
+	e.Attr("penwidth", "2")
+	e.Attr("arrowsize", "0.75")
+	e.Attr("fontname", "Helvetica")
 	e.Attr("color", roleColors[r])
 	e.Attr("fontcolor", roleColors[r])
 }
@@ -143,7 +149,7 @@ func (g *generator) addExternal() {
 			for _, n := range nodes {
 				g.addEdge(
 					n,
-					g.externalConsumer(),
+					g.foreignConsumer(),
 					t,
 					g.roles[t],
 				)
@@ -155,7 +161,7 @@ func (g *generator) addExternal() {
 		if _, ok := g.producers[t]; !ok {
 			for _, n := range nodes {
 				g.addEdge(
-					g.externalProducer(),
+					g.foreignProducer(),
 					n,
 					t,
 					g.roles[t],
@@ -165,31 +171,38 @@ func (g *generator) addExternal() {
 	}
 }
 
-// externalConsumer adds and returns a node representing an external consumer.
-func (g *generator) externalConsumer() dot.Node {
-	sg := g.root.Subgraph("external", dot.ClusterOption{})
+// foreignConsumer adds and returns a node representing an external consumer.
+func (g *generator) foreignConsumer() dot.Node {
+	sg := g.root.Subgraph("(foreign app)", dot.ClusterOption{})
+	sg.Attr("penwidth", "0")
+	sg.Attr("style", "filled")
+	sg.Attr("fillcolor", "#eeeeee")
+	sg.Attr("fontname", "Helvetica")
+
 	n := sg.Node("consumer")
 	n.Attr("style", "filled")
-	n.Attr("fillcolor", externalNodeColor)
-	n.Attr("shape", externalNodeShape)
-	n.Attr("fontsize", nodeLabelFontSize)
+	n.Attr("fillcolor", foreignNodeColor)
+	n.Attr("shape", foreignNodeShape)
+	n.Attr("color", "#eeeeee")
+
 	return n
 }
 
-// externalConsumer adds and returns a node representing an external producer.
-func (g *generator) externalProducer() dot.Node {
-	sg := g.root.Subgraph("external", dot.ClusterOption{})
+// foreignProducer adds and returns a node representing an external producer.
+func (g *generator) foreignProducer() dot.Node {
+	sg := g.root.Subgraph("(foreign app)", dot.ClusterOption{})
+	sg.Attr("penwidth", "0")
+	sg.Attr("style", "filled")
+	sg.Attr("fillcolor", "#eeeeee")
+	sg.Attr("fontname", "Helvetica")
+
 	n := sg.Node("producer")
 	n.Attr("style", "filled")
-	n.Attr("fillcolor", externalNodeColor)
-	n.Attr("shape", externalNodeShape)
-	n.Attr("fontsize", nodeLabelFontSize)
-	return n
-}
+	n.Attr("fillcolor", foreignNodeColor)
+	n.Attr("shape", foreignNodeShape)
+	n.Attr("color", "#eeeeee")
 
-// makeLabel makes a node label from a name and type.
-func makeLabel(n, t string) string {
-	return fmt.Sprintf("%s\n(%s)", n, t)
+	return n
 }
 
 // sortHandlers returns a set of handlers in an app, sorted by the number of

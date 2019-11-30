@@ -6,11 +6,8 @@ import (
 )
 
 const (
-	nodeLabelFontSize = "14"
-	edgeLabelFontSize = "12"
-
-	externalNodeShape = "oval"
-	externalNodeColor = "#aaffaa"
+	foreignNodeShape = "box"
+	foreignNodeColor = "#aaaaaa"
 )
 
 var roleColors = map[message.Role]string{
@@ -19,8 +16,8 @@ var roleColors = map[message.Role]string{
 }
 
 var handlerShapes = map[configkit.HandlerType]string{
-	configkit.AggregateHandlerType:   "oval",
-	configkit.ProcessHandlerType:     "diamond",
+	configkit.AggregateHandlerType:   "box",
+	configkit.ProcessHandlerType:     "box",
 	configkit.IntegrationHandlerType: "box",
 	configkit.ProjectionHandlerType:  "cylinder",
 }
