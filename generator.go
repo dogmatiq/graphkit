@@ -54,11 +54,8 @@ func (g *generator) addApp(cfg configkit.Application) {
 		g.nextID(),
 		dot.ClusterOption{},
 	)
-	g.app.Attr("penwidth", "0")
-	g.app.Attr("style", "filled")
-	g.app.Attr("fillcolor", "#eeeeee")
 	g.app.Attr("label", cfg.Identity().Name)
-	g.app.Attr("fontname", "Helvetica")
+	styleApp(g.app, cfg)
 
 	for _, h := range sortHandlers(cfg.Handlers()) {
 		g.addHandler(h)
@@ -69,13 +66,7 @@ func (g *generator) addApp(cfg configkit.Application) {
 func (g *generator) addHandler(cfg configkit.Handler) {
 	n := g.app.Node(g.nextID())
 	n.Attr("label", cfg.Identity().Name)
-	n.Attr("fillcolor", handlerColors[cfg.HandlerType()])
-	n.Attr("shape", handlerShapes[cfg.HandlerType()])
-	n.Attr("style", "filled")
-	n.Attr("fontname", "Helvetica")
-	n.Attr("margin", "0.15")
-	n.Attr("penwidth", "2")
-	n.Attr("color", "#eeeeee")
+	styleHandler(n, cfg)
 
 	g.addEdges(cfg, n)
 }
@@ -134,11 +125,7 @@ func (g *generator) addEdge(src, dst dot.Node, mn message.Name, r message.Role) 
 		label,
 	)
 
-	e.Attr("penwidth", "2")
-	e.Attr("arrowsize", "0.75")
-	e.Attr("fontname", "Helvetica")
-	e.Attr("color", roleColors[r])
-	e.Attr("fontcolor", roleColors[r])
+	styleMessageEdge(e, r)
 }
 
 // addExternal adds nodes that represent producers and consumers that are
@@ -174,16 +161,10 @@ func (g *generator) addExternal() {
 // foreignConsumer adds and returns a node representing an external consumer.
 func (g *generator) foreignConsumer() dot.Node {
 	sg := g.root.Subgraph("(foreign app)", dot.ClusterOption{})
-	sg.Attr("penwidth", "0")
-	sg.Attr("style", "filled")
-	sg.Attr("fillcolor", "#eeeeee")
-	sg.Attr("fontname", "Helvetica")
+	styleApp(sg, nil)
 
 	n := sg.Node("consumer")
-	n.Attr("style", "filled")
-	n.Attr("fillcolor", foreignNodeColor)
-	n.Attr("shape", foreignNodeShape)
-	n.Attr("color", "#eeeeee")
+	styleHandler(n, nil)
 
 	return n
 }
@@ -191,16 +172,10 @@ func (g *generator) foreignConsumer() dot.Node {
 // foreignProducer adds and returns a node representing an external producer.
 func (g *generator) foreignProducer() dot.Node {
 	sg := g.root.Subgraph("(foreign app)", dot.ClusterOption{})
-	sg.Attr("penwidth", "0")
-	sg.Attr("style", "filled")
-	sg.Attr("fillcolor", "#eeeeee")
-	sg.Attr("fontname", "Helvetica")
+	styleApp(sg, nil)
 
 	n := sg.Node("producer")
-	n.Attr("style", "filled")
-	n.Attr("fillcolor", foreignNodeColor)
-	n.Attr("shape", foreignNodeShape)
-	n.Attr("color", "#eeeeee")
+	styleHandler(n, nil)
 
 	return n
 }
