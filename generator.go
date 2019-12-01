@@ -160,10 +160,7 @@ func (g *generator) addExternal() {
 
 // foreignConsumer adds and returns a node representing an external consumer.
 func (g *generator) foreignConsumer() dot.Node {
-	sg := g.root.Subgraph("(foreign app)", dot.ClusterOption{})
-	styleApp(sg, nil)
-
-	n := sg.Node("consumer")
+	n := g.root.Node("foreign\nconsumer")
 	styleHandler(n, nil)
 
 	return n
@@ -171,10 +168,7 @@ func (g *generator) foreignConsumer() dot.Node {
 
 // foreignProducer adds and returns a node representing an external producer.
 func (g *generator) foreignProducer() dot.Node {
-	sg := g.root.Subgraph("(foreign app)", dot.ClusterOption{})
-	styleApp(sg, nil)
-
-	n := sg.Node("producer")
+	n := g.root.Node("foreign\nproducer")
 	styleHandler(n, nil)
 
 	return n
