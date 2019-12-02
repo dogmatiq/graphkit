@@ -8,7 +8,13 @@ import (
 
 const fontName = "Helvetica"
 
-var roleColors = map[message.Role]string{
+var roleFontColors = map[message.Role]string{
+	message.CommandRole: "#ffffff",
+	message.EventRole:   "#000000",
+	message.TimeoutRole: "#ffffff",
+}
+
+var roleBackgroundColors = map[message.Role]string{
 	message.CommandRole: "#0066ff",
 	message.EventRole:   "#ff6600",
 	message.TimeoutRole: "#444444",
@@ -21,7 +27,14 @@ var handlerShapes = map[configkit.HandlerType]string{
 	configkit.ProjectionHandlerType:  "cylinder",
 }
 
-var handlerColors = map[configkit.HandlerType]string{
+var handlerFontColors = map[configkit.HandlerType]string{
+	configkit.AggregateHandlerType:   "#000000",
+	configkit.ProcessHandlerType:     "#ffffff",
+	configkit.IntegrationHandlerType: "#000000",
+	configkit.ProjectionHandlerType:  "#000000",
+}
+
+var handlerBackgroundColors = map[configkit.HandlerType]string{
 	configkit.AggregateHandlerType:   "#fff89d",
 	configkit.ProcessHandlerType:     "#c086c5",
 	configkit.IntegrationHandlerType: "#ffde00",
@@ -31,6 +44,7 @@ var handlerColors = map[configkit.HandlerType]string{
 // styleApp applies style attributes to a sub-graph representing an application.
 func styleApp(g *dot.Graph, cfg configkit.Application) {
 	g.Attr("fontname", fontName)
+	g.Attr("fontcolor", "#444444")
 	g.Attr("penwidth", "0")
 	g.Attr("style", "filled")
 	g.Attr("fillcolor", "#eeeeee")
@@ -44,7 +58,8 @@ func styleHandler(n dot.Node, cfg configkit.Handler) {
 	n.Attr("margin", "0.15")
 	n.Attr("penwidth", "2")
 	n.Attr("color", "#eeeeee")
-	n.Attr("fillcolor", handlerColors[cfg.HandlerType()])
+	n.Attr("fontcolor", handlerFontColors[cfg.HandlerType()])
+	n.Attr("fillcolor", handlerBackgroundColors[cfg.HandlerType()])
 	n.Attr("shape", handlerShapes[cfg.HandlerType()])
 }
 
@@ -54,8 +69,8 @@ func styleMessageEdge(e dot.Edge, r message.Role) {
 	e.Attr("fontname", fontName)
 	e.Attr("penwidth", "2")
 	e.Attr("arrowsize", "0.75")
-	e.Attr("color", roleColors[r])
-	e.Attr("fontcolor", roleColors[r])
+	e.Attr("color", roleBackgroundColors[r])
+	e.Attr("fontcolor", roleBackgroundColors[r])
 }
 
 // styleForeignNode applies style attributes to a graph node representing a
@@ -66,6 +81,7 @@ func styleForeignNode(n dot.Node, r message.Role) {
 	n.Attr("margin", "0.15")
 	n.Attr("penwidth", "2")
 	n.Attr("color", "#ffffff")
-	n.Attr("fillcolor", roleColors[r])
+	n.Attr("fontcolor", roleFontColors[r])
+	n.Attr("fillcolor", roleBackgroundColors[r])
 	n.Attr("shape", "box")
 }
