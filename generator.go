@@ -43,7 +43,7 @@ func (g *generator) generate(apps []configkit.Application) (_ *dot.Graph, err er
 		g.addApp(app)
 	}
 
-	g.addExternal()
+	g.addForeign()
 
 	return g.root, nil
 }
@@ -128,48 +128,56 @@ func (g *generator) addEdge(src, dst dot.Node, mn message.Name, r message.Role) 
 	styleMessageEdge(e, r)
 }
 
-// addExternal adds nodes that represent producers and consumers that are
+// addForeign adds nodes that represent producers and consumers that are
 // external to any of the applications in the graph.
-func (g *generator) addExternal() {
-	for t, nodes := range g.producers {
-		if _, ok := g.consumers[t]; !ok {
-			for _, n := range nodes {
-				g.addEdge(
-					n,
-					g.foreignConsumer(),
-					t,
-					g.roles[t],
-				)
-			}
+func (g *generator) addForeign() {
+	for mn, nodes := range g.producers {
+		if _, ok := g.consumers[mn]; ok {
+			continue
+		}
+
+		r := g.roles[mn]
+
+		for _, n := range nodes {
+			g.addEdge(
+				n,
+				g.foreignConsumer(r),
+				mn,
+				r,
+			)
 		}
 	}
 
-	for t, nodes := range g.consumers {
-		if _, ok := g.producers[t]; !ok {
-			for _, n := range nodes {
-				g.addEdge(
-					g.foreignProducer(),
-					n,
-					t,
-					g.roles[t],
-				)
-			}
+	for mn, nodes := range g.consumers {
+		if _, ok := g.producers[mn]; ok {
+			continue
+		}
+
+		r := g.roles[mn]
+
+		for _, n := range nodes {
+			g.addEdge(
+				n,
+				g.foreignProducer(r),
+				mn,
+				r,
+			)
 		}
 	}
 }
 
 // foreignConsumer adds and returns a node representing an external consumer.
-func (g *generator) foreignConsumer() dot.Node {
-	n := g.root.Node("foreign\nconsumer")
-	styleHandler(n, nil)
+func (g *generator) foreignConsumer(r message.Role) dot.Node {
+	n := g.root.Node("foreign\n" + r.String() + "\nconsumer")
+	styleForeignNode(n, r)
 
 	return n
 }
 
 // foreignProducer adds and returns a node representing an external producer.
-func (g *generator) foreignProducer() dot.Node {
-	n := g.root.Node("foreign\nproducer")
-	styleHandler(n, nil)
+func (g *generator) foreignProducer(r message.Role) dot.Node {
+	n := g.root.Node("foreign\n" + r.String() + "\nproducer")
+	styleForeignNode(n, r)
 
 	return n
 }

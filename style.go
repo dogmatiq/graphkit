@@ -11,6 +11,7 @@ const fontName = "Helvetica"
 var roleColors = map[message.Role]string{
 	message.CommandRole: "#0066ff",
 	message.EventRole:   "#ff6600",
+	message.TimeoutRole: "#444444",
 }
 
 var handlerShapes = map[configkit.HandlerType]string{
@@ -28,33 +29,23 @@ var handlerColors = map[configkit.HandlerType]string{
 }
 
 // styleApp applies style attributes to a sub-graph representing an application.
-//
-// If cfg is nil, the graph represents a foreign application.
 func styleApp(g *dot.Graph, cfg configkit.Application) {
 	g.Attr("fontname", fontName)
-	g.Attr("style", "filled")
 	g.Attr("penwidth", "0")
+	g.Attr("style", "filled")
 	g.Attr("fillcolor", "#eeeeee")
 }
 
 // styleHandler applies style attributes to a graph node representing a Dogma
 // message handler.
-//
-// If cfg is nil, the node represents a handler within a foreign application.
 func styleHandler(n dot.Node, cfg configkit.Handler) {
 	n.Attr("fontname", fontName)
 	n.Attr("style", "filled")
 	n.Attr("margin", "0.15")
 	n.Attr("penwidth", "2")
 	n.Attr("color", "#eeeeee")
-
-	if cfg == nil {
-		n.Attr("fillcolor", "#aaaaaa")
-		n.Attr("shape", "box")
-	} else {
-		n.Attr("fillcolor", handlerColors[cfg.HandlerType()])
-		n.Attr("shape", handlerShapes[cfg.HandlerType()])
-	}
+	n.Attr("fillcolor", handlerColors[cfg.HandlerType()])
+	n.Attr("shape", handlerShapes[cfg.HandlerType()])
 }
 
 // styleMessageEdge applies style attributes to an edge representing message
@@ -65,4 +56,16 @@ func styleMessageEdge(e dot.Edge, r message.Role) {
 	e.Attr("arrowsize", "0.75")
 	e.Attr("color", roleColors[r])
 	e.Attr("fontcolor", roleColors[r])
+}
+
+// styleForeignNode applies style attributes to a graph node representing a
+// foreign message producer or consumer.
+func styleForeignNode(n dot.Node, r message.Role) {
+	n.Attr("fontname", fontName)
+	n.Attr("style", "filled")
+	n.Attr("margin", "0.15")
+	n.Attr("penwidth", "2")
+	n.Attr("color", "#ffffff")
+	n.Attr("fillcolor", roleColors[r])
+	n.Attr("shape", "box")
 }

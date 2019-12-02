@@ -3,7 +3,7 @@ module github.com/dogmatiq/graphkit
 go 1.13
 
 require (
-	github.com/dogmatiq/configkit v0.0.0-20191128065634-ef51305c2232
+	github.com/dogmatiq/configkit v0.0.0-20191202003103-a125f523908a
 	github.com/dogmatiq/dogma v0.6.1
 	github.com/emicklei/dot v0.10.1
 	github.com/golang/protobuf v1.3.2 // indirect
