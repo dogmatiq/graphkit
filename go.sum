@@ -1,5 +1,5 @@
-github.com/dogmatiq/configkit v0.0.0-20191202003103-a125f523908a h1:9QF16LyuKVrGGQkOJPVg/XOe40IwKQDivJPjnAZwWBk=
-github.com/dogmatiq/configkit v0.0.0-20191202003103-a125f523908a/go.mod h1:k4Cgle0csPMTDOpBFiWs27apnX9MC+98QTs/JGyYNuM=
+github.com/dogmatiq/configkit v0.1.0 h1:3n23VY7TC7plzuaDVuaYC+SIACsvzfAjfepXQJRGkqM=
+github.com/dogmatiq/configkit v0.1.0/go.mod h1:k4Cgle0csPMTDOpBFiWs27apnX9MC+98QTs/JGyYNuM=
 github.com/dogmatiq/dogma v0.6.1 h1:0xizpaBpQIGMdcUQx4tiCS5azM8dytZsQOy/7NyUVm0=
 github.com/dogmatiq/dogma v0.6.1/go.mod h1:8TdjQ5jjV2DcCPb/jjHPgSrqU66H6092yMEIF5HGx0g=
 github.com/emicklei/dot v0.10.1 h1:bkzvwgIhhw/cuxxnJy5/5+ZL3GnhFxFfv0eolHtWE2w=
