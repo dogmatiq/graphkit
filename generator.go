@@ -157,8 +157,8 @@ func (g *generator) addForeign() {
 
 		for _, n := range nodes {
 			g.addEdge(
-				n,
 				g.foreignProducer(r),
+				n,
 				mn,
 				r,
 			)
