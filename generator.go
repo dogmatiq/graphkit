@@ -54,7 +54,7 @@ func (g *generator) addApp(cfg configkit.Application) {
 		g.nextID(),
 		dot.ClusterOption{},
 	)
-	g.app.Attr("label", cfg.Identity().Name)
+	g.app.Attr("label", "("+cfg.Identity().Name+")")
 	styleApp(g.app, cfg)
 
 	for _, h := range sortHandlers(cfg.Handlers()) {
@@ -104,6 +104,8 @@ func (g *generator) addEdge(src, dst dot.Node, mn message.Name, r message.Role) 
 	if index != -1 {
 		label = label[index+1:]
 	}
+
+	label = " " + label + " "
 
 	// find an existing edge and add to its label.
 	for _, e := range g.root.FindEdges(src, dst) {

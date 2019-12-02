@@ -44,6 +44,8 @@ var handlerBackgroundColors = map[configkit.HandlerType]string{
 // styleApp applies style attributes to a sub-graph representing an application.
 func styleApp(g *dot.Graph, cfg configkit.Application) {
 	g.Attr("fontname", fontName)
+	g.Attr("fontsize", "18")
+	g.Attr("labelloc", "b")
 	g.Attr("fontcolor", "#444444")
 	g.Attr("penwidth", "0")
 	g.Attr("style", "filled")
