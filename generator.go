@@ -198,7 +198,7 @@ func sortHandlers(handlers configkit.HandlerSet) []configkit.Handler {
 		func(i, j int) bool {
 			in := sorted[i].MessageNames()
 			jn := sorted[j].MessageNames()
-			return len(in.Roles) < len(jn.Roles)
+			return len(in.All()) < len(jn.All())
 		},
 	)
 
