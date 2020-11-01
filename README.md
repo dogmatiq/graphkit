@@ -8,10 +8,7 @@
 
 Generate message-flow diagrams for [Dogma](https://github.com/dogmatiq/dogma) applications.
 
-This library produces [Graphviz](https://www.graphviz.org/) diagrams in the [DOT
-language](https://www.graphviz.org/doc/info/lang.html). Use one of the Graphviz
-renderers to produce a graphic.
+> **This module is deprecated. Most of the functionality has been moved into the
+> following modules.**
 
-For an example, see the [`graph` binary in the example
-application](https://github.com/dogmatiq/example/blob/master/cmd/graph/main.go),
-and the associated recipe in the [Makefile](https://github.com/dogmatiq/example/blob/master/Makefile).
+- [dogmatiq/configkit](https://github.com/dogmatiq/configkit)
